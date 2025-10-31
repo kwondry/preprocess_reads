@@ -1,0 +1,31 @@
+import pandas as pd
+import os
+from pathlib import Path
+
+# Load configuration
+configfile: "config/config.yaml"
+
+# Load sample sheet
+samples_df = pd.read_csv(config["sample_sheet"])
+SAMPLES = samples_df["sample"].tolist()
+
+# Include rules
+include: "rules/main_processing.smk"  # Combined: helper functions, QC, preprocessing, host removal
+include: "rules/taxonomic_classification.smk"
+include: "rules/reporting.smk"
+
+# Target rule
+rule all:
+    input:
+        # MultiQC report combining all analyses
+        "results/multiqc/multiqc_report.html",
+        # Individual outputs for verification
+        expand("results/fastqc_raw/{sample}_{read}_fastqc.html",
+               sample=SAMPLES, read=["R1", "R2"]),
+        expand("results/fastp/{sample}.fastp.json", sample=SAMPLES),
+        expand("results/hisat2/{sample}_{read}.human_filtered.fastq.gz",
+               sample=SAMPLES, read=["1", "2"]),
+        expand("results/fastqc_filtered/{sample}_{read}_fastqc.html",
+               sample=SAMPLES, read=["R1", "R2"]),
+        expand("results/kraken/{sample}_kraken_report.txt", sample=SAMPLES),
+        expand("results/bracken/{sample}_bracken_report.txt", sample=SAMPLES)

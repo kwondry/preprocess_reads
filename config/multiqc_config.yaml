@@ -1,0 +1,34 @@
+# MultiQC configuration file
+
+# Module order
+module_order:
+  - fastqc:
+      name: "FastQC - Raw Reads"
+      path_filters:
+        - "*/fastqc_raw/*"
+  - fastp
+  - fastqc:
+      name: "FastQC - Host-Filtered Reads"
+      path_filters:
+        - "*/fastqc_filtered/*"
+  - hisat2
+  - bracken
+
+# Clean sample names by removing these patterns
+extra_fn_clean_exts:
+  - ".fastp"
+  - "_fastqc"
+  - "_hisat2_report"
+  - "_kraken_report"
+  - "_bracken_report"
+
+extra_fn_clean_trim:
+  - "_R1"
+  - "_R2"
+
+# Kraken configuration
+kraken:
+  top_n: 40
+
+# Export plots as static images
+export_plots: true

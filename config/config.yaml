@@ -1,0 +1,49 @@
+# Configuration file for shotgun metagenomic read preprocessing pipeline
+
+# Sample sheet - CSV with columns: sample, fastq_1, fastq_2
+sample_sheet: "config/samples.csv"
+
+# Database paths
+kraken_db_path: "/n/scratch/groups/mgh/kwon/kraken_gtdbtk_index/"
+hisat2_index: "/n/groups/kwon/joseph/dbs/combined_T2T_CRCh38_reference_for_host_filtering_hisat2"
+T2T_reference: "/n/groups/kwon/joseph/dbs/combined_T2T_CRCh38_reference_for_host_filtering.fna"
+
+# FastP parameters
+fastp:
+  # Adapter sequences (auto-detect if not specified)
+  adapter_r1: ""
+  adapter_r2: ""
+  # Quality filtering
+  qualified_quality_phred: 20
+  # Minimum read length after trimming
+  length_required: 50
+  # PolyG tail trimming for NextSeq/NovaSeq
+  trim_poly_g: true
+  # PolyX tail trimming
+  trim_poly_x: true
+  # Complexity filtering
+  complexity_threshold: 30
+
+# HISAT2 parameters for host removal
+hisat2:
+  # Alignment sensitivity
+  score_min: "L,0,-0.6"
+  # No spliced alignment for metagenomics
+  no_spliced_alignment: true
+  # Number of threads
+  threads: 8
+
+# Kraken2 parameters
+kraken:
+  # Number of threads
+  threads: 8
+  confidence: 0.1
+
+bracken:
+  read_len: 150  # Adjust to your actual read length
+  level: "S"     # Taxonomic level: D=Domain, P=Phylum, C=Class, O=Order, F=Family, G=Genus, S=Species
+
+# MultiQC parameters
+multiqc:
+  # Config for custom sample names
+  config: "config/multiqc_config.yaml"
